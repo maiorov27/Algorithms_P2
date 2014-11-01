@@ -1,27 +1,44 @@
 public class Graph {
 
     private Bag<Integer>[] vertexArray;
-    private final int V;
-    private int E;
+    private final int vertices;
+    private int edges;
 
-    public Graph(int V) {
-        this.V = V;
+    public Graph(int vertices) {
+        this.vertices = vertices;
 
-        vertexArray = (Bag<Integer>[])new Bag[V];
-        for (int i = 0; i < V; i++){
+        vertexArray = (Bag<Integer>[])new Bag[vertices];
+        for (int i = 0; i < vertices; i++){
             vertexArray[i] = new Bag<Integer>();
         }
     }
 
     public Graph(In in) {
-        this.V = in.readInt();
-        this.E = in.readInt();
+        this.vertices = in.readInt();
+        int edges = in.readInt();
 
-        for(int i = 0; i < 2*E; i++ ) {
+        for(int i = 0; i < edges; i++ ) {
 
+            int v = in.readInt();
+            int w = in.readInt();
+
+            addEdge(v, w);
         }
 
     }
 
+    public void addEdge(int v, int w) {
+        vertexArray[v].add(w);
+        vertexArray[w].add(v);
+        edges++;
+    }
+
+    public int V() {return vertices;}
+
+    public int E() {return edges;}
+
+    public Iterable adj(int v) {
+        return vertexArray[v];
+    }
 
 }
