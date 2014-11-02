@@ -41,4 +41,8 @@ public class Graph {
         return vertexArray[v];
     }
 
+    public String toString() {
+        return null;
+    }
+
 }
