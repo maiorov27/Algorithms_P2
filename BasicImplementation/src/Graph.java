@@ -37,7 +37,7 @@ public class Graph {
 
     public int E() {return edges;}
 
-    public Iterable adj(int v) {
+    public Iterable<Integer> adj(int v) {
         return vertexArray[v];
     }
 
