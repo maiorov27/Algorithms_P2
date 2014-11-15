@@ -29,6 +29,7 @@ public class WordNetTests {
         wn.processSynsets(file.getAbsolutePath());
         Map<String, Integer> words  = wn.getSynset();
         assertThat(words.get("Java")).isEqualTo(72);
+        assertThat(words.get("JMX")).isEqualTo(72);
     }
 
     private void prepareSyntexData() throws IOException {

@@ -6,29 +6,23 @@ import java.util.Map;
 public class WordNet {
 
     private final static String separator = ",";
+    public static final String NEW_LINE_SYMBOL = "\r";
     private Map<String, Integer> synset = new HashMap<String, Integer>();
     private Map<Integer, ArrayList<Integer>> hypernyms = new HashMap<Integer, ArrayList<Integer>>();
 
     // constructor takes the name of the two input files
-    public WordNet(String synsets, String hypernyms){
+    public WordNet(String synsets, String hypernyms) {
 
     }
 
     protected void processSynsets(String synsetsFile) {
         BufferedReader bf = null;
-        try {
-            bf = new BufferedReader(new FileReader(synsetsFile));
-            String line = null;
-            while((line = bf.readLine()) != null) {
-                String csvLine[] = line.split(separator);
-                String words[]  = getWordsFromSynset(csvLine[1]);
-                Integer id = Integer.parseInt(csvLine[0].trim());
-                putWordsToMap(words, id);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        String[] lines = retrieveDataFromFile(synsetsFile).split(NEW_LINE_SYMBOL);
+        for (String line : lines) {
+            String csvLine[] = line.split(separator);
+            String words[] = getWordsFromSynset(csvLine[1]);
+            Integer id = Integer.parseInt(csvLine[0].trim());
+            putWordsToMap(words, id, synset);
         }
     }
 
@@ -36,9 +30,52 @@ public class WordNet {
         return synSet.split("\\s+");
     }
 
-    private void putWordsToMap(String[] words, Integer id) {
+    protected void processHypernyms(String hypernymsFile) {
+        String[] lines = retrieveDataFromFile(hypernymsFile).split(NEW_LINE_SYMBOL);
+        for(String line : lines) {
+            String csvLine[] = line.split(separator);
+            putIdsToMap(csvLine, hypernyms);
+        }
+
+    }
+
+    private void putIdsToMap(String ids[], Map map) {
+        ArrayList<Integer> list = new ArrayList();
+        Integer id = Integer.parseInt(ids[0]);
+        for(int i = 1; i < ids.length; i++) {
+            list.add(Integer.parseInt(ids[i]));
+        }
+        map.put(id, list);
+    }
+
+    private String retrieveDataFromFile(String fileName) {
+        BufferedReader bf = null;
+        StringBuffer fileMirror = new StringBuffer();
+        try {
+            bf = new BufferedReader(new FileReader(fileName));
+            String line = null;
+            while ((line = bf.readLine()) != null) {
+                fileMirror.append(line);
+                fileMirror.append(NEW_LINE_SYMBOL);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bf.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return fileMirror.toString();
+    }
+
+    private void putWordsToMap(String[] words, Integer id, Map map) {
         for (String word : words) {
-            synset.put(word, id);
+            map.put(word, id);
         }
     }
 
@@ -47,7 +84,7 @@ public class WordNet {
     }
 
     // returns all WordNet nouns
-    public Iterable<String> nouns(){
+    public Iterable<String> nouns() {
         return null;
     }
 
@@ -57,13 +94,13 @@ public class WordNet {
     }
 
     // distance between nounA and nounB (defined below)
-    public int distance(String nounA, String nounB){
+    public int distance(String nounA, String nounB) {
         return 0;
     }
 
     // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
     // in a shortest ancestral path (defined below)
-    public String sap(String nounA, String nounB){
+    public String sap(String nounA, String nounB) {
         return null;
     }
 
