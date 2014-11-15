@@ -7,6 +7,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,6 +41,24 @@ public class WordNetTests {
         bw.flush();
         bw.close();
     }
+
+    @Test
+    public void readsFromCSVHypernumIdsAndInsertThemInTheMap() throws IOException {
+        prepareHypernumData();
+        wn.processHypernyms(file.getAbsolutePath());
+        Map<Integer, ArrayList<Integer>> ids = wn.getHypernyms();
+        assertThat(ids.get(36).get(0)).isEqualTo(12);
+    }
+
+    private void prepareHypernumData() throws IOException {
+        file = tempFolder.newFile("hypernum.txt");
+        BufferedWriter  bw = new BufferedWriter(new FileWriter(file));
+        bw.write("36, 12, 35, 38, 49, 50");
+        bw.write("72, 34, 54 ");
+        bw.flush();
+        bw.close();
+    }
+
 
 
 }

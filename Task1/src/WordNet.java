@@ -41,9 +41,9 @@ public class WordNet {
 
     private void putIdsToMap(String ids[], Map map) {
         ArrayList<Integer> list = new ArrayList();
-        Integer id = Integer.parseInt(ids[0]);
+        Integer id = Integer.parseInt(ids[0].trim());
         for(int i = 1; i < ids.length; i++) {
-            list.add(Integer.parseInt(ids[i]));
+            list.add(Integer.parseInt(ids[i].trim()));
         }
         map.put(id, list);
     }
@@ -75,7 +75,7 @@ public class WordNet {
 
     private void putWordsToMap(String[] words, Integer id, Map map) {
         for (String word : words) {
-            map.put(word, id);
+            map.put(word.trim(), id);
         }
     }
 
