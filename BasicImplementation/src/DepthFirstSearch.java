@@ -21,7 +21,7 @@ public class DepthFirstSearch {
         }
     }
 
-    private boolean isMarked(int v) {
+    public boolean isMarked(int v) {
         return marked[v];
     }
 
