@@ -55,8 +55,10 @@ public class WordNetTests {
     private void prepareHypernumData() throws IOException {
         file = tempFolder.newFile("hypernum.txt");
         BufferedWriter  bw = new BufferedWriter(new FileWriter(file));
-        bw.write("36, 12, 35, 38, 49, 50");
-        bw.write("72, 34, 54 ");
+        bw.write("36, 12\n");
+        bw.write("12, 10\n");
+        bw.write("72, 34\n");
+        bw.write("34, 10\n");
         bw.flush();
         bw.close();
     }
@@ -82,6 +84,26 @@ public class WordNetTests {
         assertThat(iterator.next()).isIn("AND_circuit", "AND_gate", "Java", "JMX");
     }
 
+    @Test
+    public void calculatesPathLengthBetweenTwoVertexes() throws IOException {
+        prepareSpecialSyntexData();
+        WordNet wn1 = new WordNet("","");
+        wn1.processSynsets(file.getAbsolutePath());
+        prepareHypernumData();
+        wn1.processHypernyms(file.getAbsolutePath());
+        assertThat(wn1.distance("one", "five")).isEqualTo(4);
+    }
 
+    private void prepareSpecialSyntexData() throws IOException {
+        file = tempFolder.newFile("synset.txt");
+        BufferedWriter  bw = new BufferedWriter(new FileWriter(file));
+        bw.write("36, one, 12\n");
+        bw.write("12, two, 12\n");
+        bw.write("10, three, 10\n");
+        bw.write("72, four, 72\n");
+        bw.write("34, five, 12\n");
+        bw.flush();
+        bw.close();
+    }
 
 }

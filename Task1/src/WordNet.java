@@ -1,12 +1,10 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class WordNet {
 
     private final static String separator = ",";
-    public static final String NEW_LINE_SYMBOL = "\r";
+    public static final String NEW_LINE_SYMBOL = "\n";
     private Map<String, Integer> synset = new HashMap<String, Integer>();
     private Map<Integer, ArrayList<Integer>> hypernyms = new HashMap<Integer, ArrayList<Integer>>();
 
@@ -95,7 +93,46 @@ public class WordNet {
 
     // distance between nounA and nounB (defined below)
     public int distance(String nounA, String nounB) {
-        return 0;
+        Queue<Integer> queue = new LinkedList<Integer>();
+        Map<Integer, Boolean> marked = new HashMap<Integer, Boolean>();
+        Map<Integer, Integer> edgeTo = new HashMap<Integer, Integer>();
+        Integer idFirst = synset.get(nounA);
+        Integer idSecond = synset.get(nounB);
+        if (idFirst == null || idSecond == null){
+            throw new NullPointerException();
+        }
+        queue.add(idFirst);
+
+        while(!queue.isEmpty()) {
+            int v = queue.poll();
+            ArrayList<Integer> hypernymsList = hypernyms.get(v);
+            if (hypernymsList == null) continue;
+            ListIterator<Integer> iterator = hypernymsList.listIterator();
+            while (iterator.hasNext()) {
+                Integer w = iterator.next();
+                if (marked.get(w) == null) {
+                    marked.put(w,true);
+                    edgeTo.put(w, v);
+                    queue.add(w);
+                }
+            }
+        }
+
+        if (marked.get(idSecond) == null ) {
+            return 0;
+        }
+
+
+
+        return findPathLengthTo(idFirst, idSecond, edgeTo);
+    }
+
+    private int findPathLengthTo(int startVertex,int destVertex, Map<Integer, Integer> edgeTo) {
+        int counter = 0;
+        for ( int i = edgeTo.get(destVertex); i != startVertex ; i = edgeTo.get(i) ) {
+            counter++;
+        }
+        return counter;
     }
 
     // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
