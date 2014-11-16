@@ -8,7 +8,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,7 +23,7 @@ public class WordNetTests {
     File file;
     @Before
     public void setUp() {
-     wn = new WordNet("synset.txt",null);
+     wn = new WordNet("synset.txt", "hypernum.txt");
     }
 
     @Test
@@ -57,6 +59,27 @@ public class WordNetTests {
         bw.write("72, 34, 54 ");
         bw.flush();
         bw.close();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void throwNullPointerExceptionWhenConstructorInvokedIfOneArgumentIsNull() {
+        new WordNet(null, "some.txt");
+        new WordNet("", null);
+    }
+
+    @Test
+    public void returnWhetherGivenWordInWordNetGraph() throws IOException {
+        prepareSyntexData();
+        wn.processSynsets(file.getAbsolutePath());
+        assertThat(wn.isNoun("Java")).isTrue();
+    }
+
+    @Test
+    public void returnsSetOfWordsInGraph() throws IOException {
+        prepareSyntexData();
+        wn.processSynsets(file.getAbsolutePath());
+        Iterator<String> iterator = wn.nouns().iterator();
+        assertThat(iterator.next()).isIn("AND_circuit", "AND_gate", "Java", "JMX");
     }
 
 

@@ -12,7 +12,9 @@ public class WordNet {
 
     // constructor takes the name of the two input files
     public WordNet(String synsets, String hypernyms) {
-
+        if (synsets == null || hypernyms == null) {
+            throw new NullPointerException();
+        }
     }
 
     protected void processSynsets(String synsetsFile) {
@@ -83,14 +85,12 @@ public class WordNet {
 
     }
 
-    // returns all WordNet nouns
     public Iterable<String> nouns() {
-        return null;
+        return synset.keySet();
     }
 
-    // is the word a WordNet noun?
     public boolean isNoun(String word) {
-        return true;
+        return synset.containsKey(word);
     }
 
     // distance between nounA and nounB (defined below)
