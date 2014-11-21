@@ -5,6 +5,7 @@ public class WordNet {
 
     private final static String separator = ",";
     public static final String NEW_LINE_SYMBOL = "\n";
+
     private Map<String, Integer> synset = new HashMap<String, Integer>();
     private Map<Integer, ArrayList<Integer>> hypernyms = new HashMap<Integer, ArrayList<Integer>>();
 
@@ -13,9 +14,11 @@ public class WordNet {
         if (synsets == null || hypernyms == null) {
             throw new NullPointerException();
         }
+        processSynsets(synsets);
+        processHypernyms(hypernyms);
     }
 
-    protected void processSynsets(String synsetsFile) {
+    private void processSynsets(String synsetsFile) {
         BufferedReader bf = null;
         String[] lines = retrieveDataFromFile(synsetsFile).split(NEW_LINE_SYMBOL);
         for (String line : lines) {
@@ -30,13 +33,12 @@ public class WordNet {
         return synSet.split("\\s+");
     }
 
-    protected void processHypernyms(String hypernymsFile) {
+    private void processHypernyms(String hypernymsFile) {
         String[] lines = retrieveDataFromFile(hypernymsFile).split(NEW_LINE_SYMBOL);
         for(String line : lines) {
             String csvLine[] = line.split(separator);
             putIdsToMap(csvLine, hypernyms);
         }
-
     }
 
     private void putIdsToMap(String ids[], Map map) {
@@ -128,7 +130,7 @@ public class WordNet {
     }
 
     private int findPathLengthTo(int startVertex,int destVertex, Map<Integer, Integer> edgeTo) {
-        int counter = 0;
+        int counter = 1;
         for ( int i = edgeTo.get(destVertex); i != startVertex ; i = edgeTo.get(i) ) {
             counter++;
         }

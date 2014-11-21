@@ -91,7 +91,7 @@ public class WordNetTests {
         wn1.processSynsets(file.getAbsolutePath());
         prepareHypernumData();
         wn1.processHypernyms(file.getAbsolutePath());
-        assertThat(wn1.distance("one", "five")).isEqualTo(4);
+        assertThat(wn1.distance("one", "three")).isEqualTo(2);
     }
 
     private void prepareSpecialSyntexData() throws IOException {
