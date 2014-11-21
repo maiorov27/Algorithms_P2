@@ -10,9 +10,7 @@ public class WordNet {
     private Map<Integer, ArrayList<Integer>> hypernyms = new HashMap<Integer, ArrayList<Integer>>();
 
     public WordNet(String synsets, String hypernyms) {
-        if (synsets == null || hypernyms == null) {
-            throw new NullPointerException();
-        }
+        throwExceptionIfNull(synsets, hypernyms);
         processSynsets(synsets);
         processHypernyms(hypernyms);
     }
@@ -80,60 +78,28 @@ public class WordNet {
         }
     }
 
-    private void processHypernyms() {
-
-    }
-
     public Iterable<String> nouns() {
         return synset.keySet();
     }
 
     public boolean isNoun(String word) {
+        throwExceptionIfNull(word);
+
         return synset.containsKey(word);
     }
 
     // distance between nounA and nounB (defined below)
     public int distance(String nounA, String nounB) {
-        Queue<Integer> queue = new LinkedList<Integer>();
-        Map<Integer, Boolean> marked = new HashMap<Integer, Boolean>();
-        Map<Integer, Integer> edgeTo = new HashMap<Integer, Integer>();
-        Integer idFirst = synset.get(nounA);
-        Integer idSecond = synset.get(nounB);
-        if (idFirst == null || idSecond == null){
-            throw new NullPointerException();
-        }
-        queue.add(idFirst);
-
-        while(!queue.isEmpty()) {
-            int v = queue.poll();
-            ArrayList<Integer> hypernymsList = hypernyms.get(v);
-            if (hypernymsList == null) continue;
-            ListIterator<Integer> iterator = hypernymsList.listIterator();
-            while (iterator.hasNext()) {
-                Integer w = iterator.next();
-                if (marked.get(w) == null) {
-                    marked.put(w,true);
-                    edgeTo.put(w, v);
-                    queue.add(w);
-                }
-            }
-        }
-
-        if (marked.get(idSecond) == null ) {
-            return 0;
-        }
-
-
-
-        return findPathLengthTo(idFirst, idSecond, edgeTo);
+        throwExceptionIfNull(nounA, nounB);
+        return 0;
     }
 
-    private int findPathLengthTo(int startVertex,int destVertex, Map<Integer, Integer> edgeTo) {
-        int counter = 1;
-        for ( int i = edgeTo.get(destVertex); i != startVertex ; i = edgeTo.get(i) ) {
-            counter++;
+    private void throwExceptionIfNull(Object...obj) {
+        for(Object o:obj){
+            if(o == null) {
+                throw new NullPointerException();
+            }
         }
-        return counter;
     }
 
     // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
