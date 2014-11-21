@@ -9,7 +9,6 @@ public class WordNet {
     private Map<String, Integer> synset = new HashMap<String, Integer>();
     private Map<Integer, ArrayList<Integer>> hypernyms = new HashMap<Integer, ArrayList<Integer>>();
 
-    // constructor takes the name of the two input files
     public WordNet(String synsets, String hypernyms) {
         if (synsets == null || hypernyms == null) {
             throw new NullPointerException();
